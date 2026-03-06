@@ -51,7 +51,12 @@ const initialState: State = {
 function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case 'START_INTAKE':
-			return { ...state, status: 'intake', error: null, _originalRequest: action.request }
+			return {
+				...state,
+				status: 'intake',
+				error: null,
+				_originalRequest: action.request,
+			}
 		case 'NEEDS_CLARIFICATION':
 			return { ...state, status: 'clarifying', questions: action.questions }
 		case 'START_RESEARCH':
@@ -162,7 +167,10 @@ export function usePipeline({
 			if (!state.questions) return
 
 			const qaPairs = state.questions
-				.map((q, i) => `<question>${q}</question>\n<answer>${answers[i] ?? ''}</answer>`)
+				.map(
+					(q, i) =>
+						`<question>${q}</question>\n<answer>${answers[i] ?? ''}</answer>`,
+				)
 				.join('\n\n')
 
 			const enrichedContext = state._originalRequest
