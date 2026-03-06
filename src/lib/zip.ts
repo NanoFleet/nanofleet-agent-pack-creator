@@ -27,7 +27,7 @@ Add memory entries that should persist across conversations.
 - key: preferred_language
   value: TypeScript
 - key: project_context
-  value: NanoFleet agent pack generator
+  value: NanoFleet agent pack creator
 \`\`\`
 `
 

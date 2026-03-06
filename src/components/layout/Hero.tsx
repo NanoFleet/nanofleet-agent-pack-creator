@@ -12,7 +12,7 @@ export function Hero() {
 					margin: '0 0 16px',
 				}}
 			>
-				Agent Pack Generator
+				Agent Pack Creator
 			</h1>
 			<p
 				style={{

@@ -9,7 +9,7 @@
 
 Generates production-ready [NanoFleet](https://www.nanofleet.ovh) Agent Packs from a plain text description. It runs a multi-stage AI pipeline — intake → research → generate — and lets you iteratively refine the result before downloading a ready-to-deploy `.zip`.
 
-<img width="2662" height="1866" alt="Agent Pack Generator" src="https://github.com/user-attachments/assets/73ae4741-e2c8-4825-a069-480637c35dc1" />
+<img width="2662" height="1866" alt="Agent Pack Creator" src="https://github.com/user-attachments/assets/73ae4741-e2c8-4825-a069-480637c35dc1" />
 
 ## Getting started
 
