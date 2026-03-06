@@ -41,7 +41,7 @@ Step-by-step instructions for performing this skill...
 </example>
 
 ## HEARTBEAT.md
-Free-form markdown describing what the agent should do each time the heartbeat triggers. If the agent has no periodic tasks, output an empty string for this field.
+Free-form markdown describing what the agent should do each time the heartbeat triggers. If the agent has no periodic tasks, omit this field entirely.
 
 Include:
 - What to check or monitor
@@ -88,7 +88,7 @@ Classify each skill as one of two types:
    d. Write detailed, imperative instructions ("Run the scanner", not "The agent should run").
    e. Structure for progressive disclosure: overview first, details after.
    f. Keep each SKILL.md under 500 lines.
-5. Generate HEARTBEAT.md only if the research indicates periodic tasks; otherwise output an empty string.
+5. Generate HEARTBEAT.md only if the research indicates periodic tasks; otherwise omit the field.
 6. Set agentName to a clean kebab-case slug (e.g., "web-security-researcher").
 </instructions>
 
@@ -129,7 +129,7 @@ export const packFilesJsonSchema = jsonSchema<PackFilesSchema>({
 		heartbeat: {
 			type: 'string',
 			description:
-				'Full content of HEARTBEAT.md — empty string if no periodic tasks',
+				'Full content of HEARTBEAT.md — only if periodic tasks detected',
 		},
 		skills: {
 			type: 'array',
@@ -151,6 +151,6 @@ export const packFilesJsonSchema = jsonSchema<PackFilesSchema>({
 			},
 		},
 	},
-	required: ['agentName', 'soul', 'style', 'heartbeat', 'skills'],
+	required: ['agentName', 'soul', 'style', 'skills'],
 	additionalProperties: false,
 })
