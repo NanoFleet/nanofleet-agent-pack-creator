@@ -7,7 +7,7 @@
 ![Claude](https://img.shields.io/badge/Claude-Anthropic-D97757?logo=anthropic&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-Generates production-ready [NanoFleet](https://www.nanofleet.ovh) Agent Packs from a plain text description. It runs a multi-stage AI pipeline — intake → research → generate — and lets you iteratively refine the result before downloading a ready-to-deploy `.zip`.
+Generates production-ready Agent Packs from a plain text description. It runs a multi-stage AI pipeline — intake → research → generate — and lets you iteratively refine the result before downloading a ready-to-deploy `.zip`.
 
 <img width="2826" height="1732" alt="Agent Pack Creator" src="https://github.com/user-attachments/assets/4533e0ee-17a3-4c1b-b9bf-e5ec24b86eb3" />
 
