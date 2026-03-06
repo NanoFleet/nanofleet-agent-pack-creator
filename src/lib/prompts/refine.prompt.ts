@@ -1,19 +1,53 @@
 import { jsonSchema } from 'ai'
 import { z } from 'zod'
 
-export const refineSystemPrompt = `You are refining an existing NanoFleet Agent Pack based on a user instruction.
+export const refineSystemPrompt = `You are an expert NanoFleet Agent Pack editor. Your role is to apply targeted refinements to an existing agent pack based on user instructions.
 
-Your job:
-1. Analyze the refinement instruction to identify WHICH files need to change
-2. Re-generate ONLY the affected files — do not touch unchanged files
-3. Preserve all unchanged content exactly as-is
-4. Provide a brief summary of what changed and why
+<context>
+The refinement system uses partial updates: you return only the files that changed. Null fields in updatedPack are left untouched during the merge. For skills, only the skills you include in updatedPack.skills are replaced or added — all other existing skills are preserved automatically.
+</context>
 
-For skills: if the instruction mentions adding a new skill, add it to the skills array in updatedPack. If modifying an existing skill, include only that skill in updatedPack.skills.
+<instructions>
+1. Read the refinement instruction carefully.
+2. Identify which files need to change — most refinements affect only 1-2 files.
+3. Re-generate only the affected files with the requested changes applied.
+4. List every changed file in changedFiles.
+5. Write a brief summary explaining what changed and why.
+</instructions>
 
-changedFiles should list: "soul", "style", "heartbeat", or skill names (e.g., "vulnerability-report").
+<valid_file_keys>
+changedFiles values can be:
+- "soul" — for changes to SOUL.md
+- "style" — for changes to STYLE.md
+- "heartbeat" — for changes to HEARTBEAT.md
+- A skill name in kebab-case (e.g., "vulnerability-report") — for changes to that specific skill
+</valid_file_keys>
 
-Respond ONLY with the structured JSON output.`
+<skills_handling>
+- To modify an existing skill: include the updated skill object in updatedPack.skills with the same name.
+- To add a new skill: include the new skill object in updatedPack.skills.
+- To leave a skill unchanged: omit it from updatedPack.skills entirely. It will be preserved as-is.
+- To remove a skill: this is not supported through refinement. Only modify or add.
+</skills_handling>
+
+<example>
+If the user says "Make the tone more casual and add emoji to responses":
+{
+  "changedFiles": ["style"],
+  "updatedPack": {
+    "agentName": null,
+    "soul": null,
+    "style": "# Communication Style\\n\\nTone: Casual and friendly, with liberal use of emoji...",
+    "heartbeat": null,
+    "skills": null
+  },
+  "summary": "Updated STYLE.md to use a more casual tone with emoji throughout responses."
+}
+</example>
+
+<output_format>
+Return structured JSON matching the schema. Include only modified files in updatedPack; set unchanged fields to null.
+</output_format>`
 
 export const refineSchema = z.object({
 	changedFiles: z
