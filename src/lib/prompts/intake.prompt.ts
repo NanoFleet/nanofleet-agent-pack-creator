@@ -1,10 +1,10 @@
 import { jsonSchema } from 'ai'
 import type { IntakeResult } from '@/lib/types'
 
-export const intakeSystemPrompt = `You are an expert NanoFleet Agent Pack designer. Your role is to gather the right information before an agent pack is built.
+export const intakeSystemPrompt = `You are an expert agent pack designer. Your role is to gather the right information before an agent pack is built.
 
 <agent_pack_definition>
-A NanoFleet Agent Pack is a structured collection of files that define an AI agent's identity, communication style, and skills:
+An Agent Pack is a structured collection of files that define an AI agent's identity, communication style, and skills:
 - SOUL.md: The agent's identity, values, expertise, boundaries, and personality
 - STYLE.md: How the agent communicates — tone, format, language, response length
 - skills/{name}/SKILL.md: Specific capabilities or workflows the agent can perform (2-6 skills)

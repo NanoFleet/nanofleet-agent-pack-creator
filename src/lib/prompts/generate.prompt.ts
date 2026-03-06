@@ -1,10 +1,10 @@
 import { jsonSchema } from 'ai'
 import { z } from 'zod'
 
-export const generateSystemPrompt = `You are an expert NanoFleet Agent Pack author. Generate a complete, production-ready agent pack based on the provided context and research.
+export const generateSystemPrompt = `You are an Agent Pack creator expert. Generate a complete, production-ready agent pack based on the provided context and research.
 
 <agent_pack_overview>
-A NanoFleet Agent Pack defines an AI agent through four file types: SOUL.md (identity), STYLE.md (communication), skills/{name}/SKILL.md (capabilities), and optionally HEARTBEAT.md (periodic tasks). Each file should be detailed, actionable, and grounded in domain-specific vocabulary from the research.
+An Agent Pack defines an AI agent through four file types: SOUL.md (identity), STYLE.md (communication), skills/{name}/SKILL.md (capabilities), and optionally HEARTBEAT.md (periodic tasks). Each file should be detailed, actionable, and grounded in domain-specific vocabulary from the research.
 </agent_pack_overview>
 
 <file_specifications>
