@@ -1,8 +1,9 @@
 import { generateObject } from 'ai'
 import {
-	generateSystemPrompt,
+	buildGenerateSystemPrompt,
 	packFilesJsonSchema,
 } from '@/lib/prompts/generate.prompt'
+import { fetchSkillCreatorBlock } from '@/lib/skills'
 import type { IntakeResult, PackFiles, ResearchResult } from '@/lib/types'
 
 export async function runGenerate(
@@ -33,10 +34,13 @@ ${researchResult.additionalContext}
 - Generate HEARTBEAT.md: ${researchResult.needsHeartbeat ? 'YES — agent has periodic tasks' : 'NO'}
 `.trim()
 
+	const skillCreatorBlock = await fetchSkillCreatorBlock()
+	const systemPrompt = buildGenerateSystemPrompt(skillCreatorBlock)
+
 	const { object } = await generateObject({
 		model,
 		schema: packFilesJsonSchema,
-		system: generateSystemPrompt,
+		system: systemPrompt,
 		messages: [{ role: 'user', content: userMessage }],
 	})
 
