@@ -191,7 +191,7 @@ Prioritize depth over breadth.
 </research_objectives>
 
 <instructions>
-1. Read the agent context to understand the domain and role.
+1. Read the agent context provided in <agent_context>. It may contain an <initial_request> (the user's original description) and <clarifications> (Q&A pairs that refine the intent) — use both to fully understand the domain and role.
 2. Search the web multiple times, covering different aspects of the domain.
 3. For each search, extract concrete details like tool names, methodologies, API references.
 4. Write a comprehensive research summary covering all five objectives above.

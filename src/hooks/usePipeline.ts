@@ -21,12 +21,13 @@ type State = {
 	refineHistory: RefineHistoryEntry[]
 	error: string | null
 	// internal context carried between phases
+	_originalRequest: string | null
 	_intakeResult: IntakeResult | null
 	_researchResult: ResearchResult | null
 }
 
 type Action =
-	| { type: 'START_INTAKE' }
+	| { type: 'START_INTAKE'; request: string }
 	| { type: 'NEEDS_CLARIFICATION'; questions: string[] }
 	| { type: 'START_RESEARCH'; intakeResult: IntakeResult }
 	| { type: 'START_GENERATING'; researchResult: ResearchResult }
@@ -42,6 +43,7 @@ const initialState: State = {
 	questions: null,
 	refineHistory: [],
 	error: null,
+	_originalRequest: null,
 	_intakeResult: null,
 	_researchResult: null,
 }
@@ -49,7 +51,7 @@ const initialState: State = {
 function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case 'START_INTAKE':
-			return { ...state, status: 'intake', error: null }
+			return { ...state, status: 'intake', error: null, _originalRequest: action.request }
 		case 'NEEDS_CLARIFICATION':
 			return { ...state, status: 'clarifying', questions: action.questions }
 		case 'START_RESEARCH':
@@ -110,18 +112,13 @@ export function usePipeline({
 	const [state, dispatch] = useReducer(reducer, initialState)
 
 	const runPhase2And3 = useCallback(
-		async (intakeResult: IntakeResult, clarifications = '') => {
+		async (intakeResult: IntakeResult) => {
 			const llmModel = getModel(apiKey, model)
 			try {
 				dispatch({ type: 'START_RESEARCH', intakeResult })
 				const enrichedContext =
 					intakeResult.status === 'ready' ? intakeResult.enrichedContext : ''
-				const researchResult = await runResearch(
-					enrichedContext,
-					clarifications,
-					apiKey,
-					model,
-				)
+				const researchResult = await runResearch(enrichedContext, apiKey, model)
 
 				dispatch({ type: 'START_GENERATING', researchResult })
 				const packFiles = await runGenerate(
@@ -141,7 +138,7 @@ export function usePipeline({
 	const submit = useCallback(
 		async (request: string, files: AttachedFile[]) => {
 			const llmModel = getModel(apiKey, model)
-			dispatch({ type: 'START_INTAKE' })
+			dispatch({ type: 'START_INTAKE', request })
 			try {
 				const intakeResult = await runIntake(request, files, llmModel)
 
@@ -162,25 +159,20 @@ export function usePipeline({
 
 	const answerQuestions = useCallback(
 		async (answers: string[]) => {
-			if (!state._intakeResult && state.questions) {
-				// Construct a synthetic intake result from original questions + answers
-				const clarifications = state.questions
-					.map((q, i) => `Q: ${q}\nA: ${answers[i] ?? ''}`)
-					.join('\n\n')
+			if (!state.questions) return
 
-				const syntheticIntake: IntakeResult = {
-					status: 'ready',
-					enrichedContext: clarifications,
-				}
-				await runPhase2And3(syntheticIntake, clarifications)
-			} else if (state._intakeResult) {
-				const clarifications = (state.questions ?? [])
-					.map((q, i) => `Q: ${q}\nA: ${answers[i] ?? ''}`)
-					.join('\n\n')
-				await runPhase2And3(state._intakeResult, clarifications)
-			}
+			const qaPairs = state.questions
+				.map((q, i) => `<question>${q}</question>\n<answer>${answers[i] ?? ''}</answer>`)
+				.join('\n\n')
+
+			const enrichedContext = state._originalRequest
+				? `<initial_request>\n${state._originalRequest}\n</initial_request>\n\n<clarifications>\n${qaPairs}\n</clarifications>`
+				: `<clarifications>\n${qaPairs}\n</clarifications>`
+
+			const syntheticIntake: IntakeResult = { status: 'ready', enrichedContext }
+			await runPhase2And3(syntheticIntake)
 		},
-		[state._intakeResult, state.questions, runPhase2And3],
+		[state.questions, state._originalRequest, runPhase2And3],
 	)
 
 	const refine = useCallback(

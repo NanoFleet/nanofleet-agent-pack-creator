@@ -17,13 +17,10 @@ function makeAnthropic(apiKey: string) {
 
 export async function runResearch(
 	enrichedContext: string,
-	clarifications: string,
 	apiKey: string,
 	modelId: string,
 ): Promise<ResearchResult> {
-	const userMessage = clarifications
-		? `Agent context:\n${enrichedContext}\n\nClarifications from user:\n${clarifications}`
-		: `Agent context:\n${enrichedContext}`
+	const userMessage = `<agent_context>\n${enrichedContext}\n</agent_context>`
 
 	// Phase 1: web search to gather real domain knowledge
 	const anthropic = makeAnthropic(apiKey)
