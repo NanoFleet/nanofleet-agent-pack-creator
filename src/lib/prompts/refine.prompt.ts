@@ -57,10 +57,10 @@ export const refineSchema = z.object({
 		),
 	updatedPack: z
 		.object({
-			agentName: z.string().optional(),
-			soul: z.string().optional(),
-			style: z.string().optional(),
-			heartbeat: z.string().optional(),
+			agentName: z.string().nullable(),
+			soul: z.string().nullable(),
+			style: z.string().nullable(),
+			heartbeat: z.string().nullable(),
 			skills: z
 				.array(
 					z.object({
@@ -69,7 +69,7 @@ export const refineSchema = z.object({
 						content: z.string(),
 					}),
 				)
-				.optional(),
+				.nullable(),
 		})
 		.describe('Partial pack with only the modified files'),
 	summary: z.string().describe('Short description of what was changed'),
